@@ -35,10 +35,7 @@ namespace SparkPostWebhooksSample
                 app.UseDeveloperExceptionPage();
             }
 
-            // Sanity Check
-            app.Run(async (ctx) => await ctx.Response.WriteAsync("Hello World!"));
-
-            //app.UseMvc();
+            app.UseMvc();
         }
     }
 }
