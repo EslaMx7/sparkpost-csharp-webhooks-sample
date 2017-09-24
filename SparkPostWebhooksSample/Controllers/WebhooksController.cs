@@ -14,7 +14,7 @@ namespace SparkPostWebhooksSample.Controllers
         public IActionResult ReceiveEvents([FromBody] JArray payload)
         {
 
-            var unsubscribe_events = new string[] {  "bounce", "list_unsubscribe", "spam_complaint", "out_of_band", "link_unsubscribe" };
+            var unsubscribe_events = new string[] { "bounce", "list_unsubscribe", "spam_complaint", "out_of_band", "link_unsubscribe" };
 
             var extracted_emails = new HashSet<string>();
 
@@ -24,16 +24,20 @@ namespace SparkPostWebhooksSample.Controllers
 
                 var evt_prop = msys.Properties().FirstOrDefault();
 
-                var message_paylod = msys[evt_prop?.Name] as JObject;
-
-                var message_type = message_paylod.Property("type")?.Value.ToString();
-
-                if (unsubscribe_events.Contains(message_type))
+                if (evt_prop != null)
                 {
-                    var recipient_address = message_paylod.Property("rcpt_to")?.Value.ToString();
+                    var message_paylod = msys[evt_prop.Name] as JObject;
 
-                    extracted_emails.Add(recipient_address);
+                    var message_type = message_paylod.Property("type")?.Value.ToString();
+
+                    if (unsubscribe_events.Contains(message_type))
+                    {
+                        var recipient_address = message_paylod.Property("rcpt_to")?.Value.ToString();
+
+                        extracted_emails.Add(recipient_address);
+                    }
                 }
+
             }
 
             // TODO: unsubscribe
