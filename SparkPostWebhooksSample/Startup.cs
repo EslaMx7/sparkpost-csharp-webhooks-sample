@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
+using SparkPostWebhooksSample.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SparkPostWebhooksSample
 {
@@ -25,10 +27,12 @@ namespace SparkPostWebhooksSample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddDbContext<SubscribersDbContext>(builder => builder.UseSqlite("Data Source=subscribers.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SubscribersDbContext db)
         {
             if (env.IsDevelopment())
             {
@@ -36,6 +40,26 @@ namespace SparkPostWebhooksSample
             }
 
             app.UseMvc();
+
+            Seed(db);
+        }
+
+        public void Seed(SubscribersDbContext db)
+        {
+            if (!db.Subscribers.Any())
+            {
+                db.Subscribers.AddRange(new List<Subscriber> {
+                        new Subscriber{ Name= "Recipient", Email="recipient@example.com", Subscribed=true},
+                        new Subscriber{ Name= "Recipient1", Email="recipient1@example.com", Subscribed=true},
+                        new Subscriber{ Name= "Recipient2", Email="recipient2@example.com", Subscribed=true},
+                        new Subscriber{ Name= "Recipient3", Email="recipient3@example.com", Subscribed=true},
+                        new Subscriber{ Name= "Recipient4", Email="recipient4@example.com", Subscribed=true},
+                        new Subscriber{ Name= "Recipient5", Email="recipient5@example.com", Subscribed=true},
+                        new Subscriber{ Name= "Recipient6", Email="recipient6@example.com", Subscribed=true}
+                });
+
+                db.SaveChanges();
+            }
         }
     }
 }
