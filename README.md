@@ -4,7 +4,7 @@
 
 Before using this example, you must have:
 
-* A shiny new SparkPost Account, [sign up for a new account][sparkpost sign up] or [login to SparkPost](https://app.sparkpost.com/)
+* A shiny new SparkPost Account, [sign up for a new account](https://app.sparkpost.com/) or [login to SparkPost](https://app.sparkpost.com/)
 
 * .NET Core Runtime 2.0 installed [Download](https://dot.net/core)
 ## Installation
