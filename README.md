@@ -20,7 +20,7 @@ Before using this example, you must have:
 * With fake data via [Postman](https://www.getpostman.com/postman)
 * With real data via [ngrok](https://ngrok.com/) by creating a new [Webhook](https://app.sparkpost.com/account/webhooks) on your SparkPost Account that points to the ngrok tunnel address. (but first you need to run `ngrok http 5000` on your machine after running the project).
 
-The sample runs on port 5000, so you need to make `POST` request to the webhook endpoint: [http://localhost:5000/api/webhook] with the expected payload.
+The sample runs on port 5000, so you need to make `POST` request to the webhook endpoint: [http://localhost:5000/api/webhook](http://localhost:5000/api/webhook) with the expected payload.
 
 Sample Payload:
 
