@@ -26,21 +26,25 @@ namespace SparkPostWebhooksSample.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var extracted_emails = payload.OfType<JObject>()
-                                          .Select(obj => obj["msys"]).Cast<JObject>()
-                                          .Where(msys => msys.Properties().FirstOrDefault() != null)
-                                          .Select(msys => msys.Properties().FirstOrDefault().Value).Cast<JObject>()
-                                          .Where(evt => unsubscribe_events.Contains(evt["type"].ToString()))
-                                          .Select(msg => msg["rcpt_to"].ToString())
-                                          .Distinct()
-                                          .ToList();
+            var msys_object = payload.OfType<JObject>()
+                                          .Select(obj => obj["msys"]).Cast<JObject>(); // We are stripping msys object
+
+            var event_object = msys_object.Where(msys => msys.Properties().FirstOrDefault() != null) // Filtering out pings
+                                          .Select(msys => msys.Properties().FirstOrDefault().Value).Cast<JObject>(); // Stripping the first *_event structure
+
+            var subscribers_emails = event_object.Where(evt => unsubscribe_events.Contains(evt["type"].ToString())) // Filter on event type
+                                                 .Select(msg => msg["rcpt_to"].ToString()); // Extract subscriber email
+
+            var extracted_emails = subscribers_emails.Distinct() // Remove emails duplication
+                                                     .ToList();
+
 
             foreach (var email in extracted_emails)
             {
-                var subscriber = _db.Subscribers.FirstOrDefault(s => s.Email == email);
+                var subscriber = _db.Subscribers.FirstOrDefault(s => s.Email == email); // Check if the email already exist
                 if (subscriber != null)
                 {
-                    subscriber.Subscribed = false;
+                    subscriber.Subscribed = false; // Unsubscribe
                 }
             }
 
