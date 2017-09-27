@@ -46,6 +46,8 @@ namespace SparkPostWebhooksSample
 
         public void Seed(SubscribersDbContext db)
         {
+            db.Database.Migrate();
+
             if (!db.Subscribers.Any())
             {
                 db.Subscribers.AddRange(new List<Subscriber> {
