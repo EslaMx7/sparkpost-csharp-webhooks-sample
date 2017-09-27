@@ -52,5 +52,12 @@ namespace SparkPostWebhooksSample.Controllers
 
             return Ok(extracted_emails);
         }
+
+        [Route("/")]
+        [HttpGet]
+        public IActionResult Home()
+        {
+            return Json(new { message = "Your Webhook Is Up And Running. You Can Try It By Sending [POST] Requests To: '/api/webhook'." });
+        }
     }
 }
