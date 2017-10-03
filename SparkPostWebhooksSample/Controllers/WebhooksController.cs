@@ -15,49 +15,54 @@ namespace SparkPostWebhooksSample.Controllers
 
         public WebhooksController(SubscribersDbContext subscribersDb)
         {
+            // Get instance for the DbContext from the DI
             _db = subscribersDb;
         }
 
+        // POST: api/webhook
         [HttpPost]
         public async Task<IActionResult> ReceiveEventsAsync([FromBody] JArray payload)
         {
+            // List of SparkPost event types that requires unsubscribe from the emails list
             var unsubscribe_events = new string[] { "bounce", "list_unsubscribe", "spam_complaint", "out_of_band", "link_unsubscribe" };
-
+            // Check if the request paload could be parsed as JSON array
             if (!ModelState.IsValid)
                 return BadRequest();
-
-            var msys_object = payload.OfType<JObject>()
-                                          .Select(obj => obj["msys"]).Cast<JObject>(); // We are stripping msys object
-
-            var event_object = msys_object.Where(msys => msys.Properties().FirstOrDefault() != null) // Filtering out pings
-                                          .Select(msys => msys.Properties().FirstOrDefault().Value).Cast<JObject>(); // Stripping the first *_event structure
-
-            var subscribers_emails = event_object.Where(evt => unsubscribe_events.Contains(evt["type"].ToString())) // Filter on event type
-                                                 .Select(msg => msg["rcpt_to"].ToString()); // Extract subscriber email
-
-            var extracted_emails = subscribers_emails.Distinct() // Remove emails duplication
-                                                     .ToList();
-
+            // We are stripping msys object
+            var msys_object = payload.OfType<JObject>().Select(obj => obj["msys"]).Cast<JObject>();
+            // Filtering out pings
+            // Then stripping the first *_event structure
+            var event_object = msys_object.Where(msys => msys.Properties().FirstOrDefault() != null) 
+                                          .Select(msys => msys.Properties().FirstOrDefault().Value).Cast<JObject>(); 
+            // Filter on event type
+            // Then extract subscriber email
+            var subscribers_emails = event_object.Where(evt => unsubscribe_events.Contains(evt["type"].ToString())) 
+                                                 .Select(msg => msg["rcpt_to"].ToString());
+            // Remove emails duplication
+            var extracted_emails = subscribers_emails.Distinct().ToList();
 
             foreach (var email in extracted_emails)
             {
-                var subscriber = _db.Subscribers.FirstOrDefault(s => s.Email == email); // Check if the email already exist
+                // Check if the email already exist
+                var subscriber = _db.Subscribers.FirstOrDefault(s => s.Email == email); 
                 if (subscriber != null)
                 {
-                    subscriber.Subscribed = false; // Unsubscribe
+                    // Unsubscribe
+                    subscriber.Subscribed = false; 
                 }
             }
-
-            await _db.SaveChangesAsync();
-
-            return Ok(extracted_emails);
+            // Save changes to the database
+            await _db.SaveChangesAsync(); 
+            // Return list of the affected emails as a feedback
+            return Ok(extracted_emails); 
         }
 
+        // GET: /
         [Route("/")]
         [HttpGet]
         public IActionResult Home()
         {
-            return Json(new { message = "Your Webhook Is Up And Running. You Can Try It By Sending [POST] Requests To: '/api/webhook'." });
+            return Json(new { message = "Your webhook is up and running. You can try it by sending [POST] requests to: '/api/webhook'." });
         }
     }
 }

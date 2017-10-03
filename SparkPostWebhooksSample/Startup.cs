@@ -28,7 +28,7 @@ namespace SparkPostWebhooksSample
         {
             services.AddMvc();
 
-            services.AddDbContext<SubscribersDbContext>(builder => builder.UseSqlite("Data Source=subscribers.db"));
+            services.AddDbContext<SubscribersDbContext>(builder => builder.UseSqlite("Data Source=subscribers.db")); // SQLite connection string
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,15 +41,16 @@ namespace SparkPostWebhooksSample
 
             app.UseMvc();
 
-            Seed(db);
+            Seed(db); // Seed the database with sample data
         }
 
         public void Seed(SubscribersDbContext db)
         {
-            db.Database.Migrate();
+            db.Database.Migrate(); // Run the migrations to update the database to latest version
 
-            if (!db.Subscribers.Any())
+            if (!db.Subscribers.Any()) // Seed the database with sample data only when empty (first time only)
             {
+                // The sample data represents a set of subscribers with their names, emails and the subscribtion status
                 db.Subscribers.AddRange(new List<Subscriber> {
                         new Subscriber{ Name= "Recipient", Email="recipient@example.com", Subscribed=true},
                         new Subscriber{ Name= "Recipient1", Email="recipient1@example.com", Subscribed=true},

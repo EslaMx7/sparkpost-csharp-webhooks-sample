@@ -14,6 +14,5 @@ namespace SparkPostWebhooksSample.Models
         public string Email { get; set; }
 
         public bool Subscribed { get; set; }
-
     }
 }

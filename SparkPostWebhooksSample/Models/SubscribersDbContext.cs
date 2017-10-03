@@ -12,9 +12,7 @@ namespace SparkPostWebhooksSample.Models
         public SubscribersDbContext(DbContextOptions<SubscribersDbContext> contextOptions) 
             : base(contextOptions) { }
 
-
         public DbSet<Subscriber> Subscribers { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,7 +20,5 @@ namespace SparkPostWebhooksSample.Models
                         .HasAlternateKey(s => s.Email)
                         .HasName("Emails_UniqueKey");
         }
-
-
     }
 }

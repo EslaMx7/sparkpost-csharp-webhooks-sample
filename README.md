@@ -13,9 +13,12 @@ Before using this example, you must have:
 * A shiny new SparkPost Account, [sign up for a new account](https://app.sparkpost.com/) or [login to SparkPost](https://app.sparkpost.com/)
 
 * .NET Core Runtime 2.0 installed ([Download](https://dot.net/core))
+
+* Visual Studio Code / Visual Studio 2017
 ## Installation
 
 ```
+> git clone <repo_url> .
 > cd SparkPostWebhooksSample
 > dotnet restore
 > dotnet ef database update
@@ -23,6 +26,9 @@ Before using this example, you must have:
 ```
 
 ## Testing The Webhook
+
+* Register the service as SparkPost webhook from your [Account](https://app.sparkpost.com/account/webhooks) then select Events (ex. `Bounce, Out of Band, Spam Complaint, List Unsubscribe, Link Unsubscribe`) then add the webhook and click the test button to send a test batch to it.
+
 * With fake data via [Postman](https://www.getpostman.com/postman)
 * With real data via [ngrok](https://ngrok.com/) by creating a new [Webhook](https://app.sparkpost.com/account/webhooks) on your SparkPost Account that points to the ngrok tunnel address. (but first you need to run `ngrok http 5000` on your machine after running the project).
 
