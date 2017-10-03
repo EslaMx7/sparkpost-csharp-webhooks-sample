@@ -1,6 +1,6 @@
 # SparkPost C# Webhooks Sample
 ---
-##  The project contains a simple implementation for [SparkPost Webhooks](https://developers.sparkpost.com/api/webhooks.html) that shows how to hook on the events that requires you to unsubscribe the user from the mailing list.
+###  The project contains a simple implementation for [SparkPost Webhooks](https://developers.sparkpost.com/api/webhooks.html) that shows how to hook on the events that requires you to unsubscribe the user from the mailing list.
 
 ---
 
